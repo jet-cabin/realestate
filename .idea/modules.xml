@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/basic/basic.iml" filepath="$PROJECT_DIR$/basic/basic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/biz/biz.iml" filepath="$PROJECT_DIR$/biz/biz.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/house-service/houseservice.iml" filepath="$PROJECT_DIR$/house-service/houseservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/order-service/orderservice.iml" filepath="$PROJECT_DIR$/order-service/orderservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/real-estate.iml" filepath="$PROJECT_DIR$/.idea/real-estate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/security/security.iml" filepath="$PROJECT_DIR$/security/security.iml" />
+    </modules>
+  </component>
+</project>

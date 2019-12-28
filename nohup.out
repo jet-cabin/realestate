@@ -1,0 +1,2 @@
+nohup: basic/target/basic-1.0-SNAPSHOT.jar: Permission denied
+basic/target/basic-1.0-SNAPSHOT.jar: basic/target/basic-1.0-SNAPSHOT.jar: cannot execute binary file

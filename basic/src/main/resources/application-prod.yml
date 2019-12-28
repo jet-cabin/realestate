@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: estate-basic
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:8066/db_basic?characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: jet
+    password: 1
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      auto-commit: true
+      connection-timeout: 30000
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 600000
+      pool-name: order-pool
+      max-lifetime: 28740000
+
+logging:
+  path: /var/logs #配置日志生成路径

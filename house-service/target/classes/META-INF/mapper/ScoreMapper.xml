@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jet.realestate.house.mapper.ScoreMapper">
+  <resultMap id="resultMap" type="com.jet.realestate.house.model.Score">
+    <id column="id" property="id"></id>
+    <result column="grade" property="grade"></result>
+    <result column="user_id" property="userId"></result>
+    <result column="houseId" property="houseId"></result>
+    <result column="createTime" property="createTime"></result>
+  </resultMap>
+
+  <sql id="BASE_COLS">
+      id,user_id,house_id,grade,create_time
+    </sql>
+
+  <insert id="insert" parameterType="com.jet.realestate.house.model.Score">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+
+    INSERT INTO t_score(user_id,house_id,grade)
+    VALUES(#{userId},#{houseId},#{grade}) ON DUPLICATE KEY UPDATE grade=#{grade}
+  </insert>
+
+  <select id="queryScores" resultMap="resultMap">
+    select
+    <include refid="BASE_COLS"></include>
+    FROM t_score WHERE house_id=#{houseId}
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="queryScore" resultMap="resultMap">
+    SELECT <include refid="BASE_COLS"></include> FROM
+    t_score
+    WHERE user_id=#{userId} and house_id=#{houseId} LIMIT 1
+  </select>
+
+
+  <!--<update id="disable">-->
+  <!--UPDATE t_score-->
+  <!--SET disable=1 WHERE id=#{msgId}-->
+  <!--</update>-->
+
+  <!--<delete id="delete">-->
+  <!--UPDATE t_score SET deleted=1 WHERE id=#{Id}-->
+  <!--</delete>-->
+</mapper>

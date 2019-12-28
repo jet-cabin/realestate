@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: estate-basic
+
+
+logging:
+  path: /var/logs #配置日志生成路径

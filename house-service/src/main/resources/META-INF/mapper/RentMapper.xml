@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jet.realestate.house.mapper.RentMapper">
+  <resultMap id="resultMap" type="com.jet.realestate.house.model.Rent">
+    <id column="id" property="id"></id>
+    <result column="price" property="price"></result>
+    <result column="vendee_id" property="vendeeId"></result>
+    <result column="house_id" property="houseId"></result>
+    <result column="create_time" property="createTime"></result>
+    <result column="employee_id" property="employeeId"></result>
+  </resultMap>
+
+  <sql id="BASE_COLS">
+      id,vendee_id,house_id,price,employee_id,create_time
+    </sql>
+
+  <insert id="insert" parameterType="com.jet.realestate.house.model.Rent">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+
+    INSERT INTO t_rent(vendee_id,house_id,price)
+    VALUES(#{vendeeId},#{houseId},#{price})
+  </insert>
+
+  <select id="queryRentsCount" resultType="java.lang.Integer">
+    select
+    count(*)
+    FROM t_rent
+    <trim prefix="WHERE" prefixOverrides="AND">
+      <if test="params.houseId!=null">house_id=#{params.houseId}</if>
+      <if test="params.beginTime!=null and params.endTime!=null"> AND create_time BETWEEN #{params.beginTime,javaType=java.time.LocalDateTime} AND #{params.endTime,javaType=java.time.LocalDateTime}</if>
+    </trim>
+    ORDER BY create_time DESC
+    <if test="params.limit>0">
+      LIMIT #{params.offset}, #{params.limit}
+    </if>
+  </select>
+
+  <select id="queryRents" resultMap="resultMap">
+    select
+    <include refid="BASE_COLS"></include>
+    FROM t_rent
+    <trim prefix="WHERE" prefixOverrides="AND">
+      <if test="params.houseId!=null">house_id=#{params.houseId}</if>
+      <if test="params.beginTime!=null and params.endTime!=null"> AND create_time BETWEEN #{params.beginTime} AND #{params.endTime}</if>
+    </trim>
+    ORDER BY create_time DESC
+  </select>
+
+
+  <select id="queryRent" resultMap="resultMap">
+    SELECT <include refid="BASE_COLS"></include> FROM
+    t_rent
+    WHERE vendee_id=#{id} LIMIT 1
+  </select>
+
+
+  <!--<update id="disable">-->
+  <!--UPDATE t_rent-->
+  <!--SET disable=1 WHERE id=#{msgId}-->
+  <!--</update>-->
+
+  <!--<delete id="delete">-->
+  <!--UPDATE t_rent SET deleted=1 WHERE id=#{Id}-->
+  <!--</delete>-->
+</mapper>

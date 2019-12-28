@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jet.realestate.house.mapper.HouseMapper">
+    <resultMap id="resultMap" type="com.jet.realestate.house.model.House">
+        <id column="id" property="id"></id>
+        <result column="title" property="title"></result>
+        <result column="layout" property="layout" typeHandler="com.jet.realestate.house.handler.LayoutHandler"></result>
+        <result column="status" property="status" typeHandler="com.jet.realestate.house.handler.StatusHandler"></result>
+        <result column="price" property="price"></result>
+        <result column="area" property="area"></result>
+        <result column="address" property="address"></result>
+        <result column="vendor_id" property="vendorId"></result>
+        <result column="vendee_id" property="vendeeId"></result>
+        <result column="note" property="note"></result>
+        <result column="publish" property="publish"></result>
+        <result column="audit_time" property="auditTime"></result>
+        <result column="audit" property="audit"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="publish_time" property="publishTime"></result>
+        <result column="isnew" property="newHouse"></result>
+        <result column="contact_phone" property="contactPhone"></result>
+    </resultMap>
+
+    <sql id="BASE_COLS">
+        `id`,  `title`,  `layout`,  `status`,  `price`,  `area`,  `address`,  `vendor_id`,
+         `vendee_id`,  `note`,  `deleted`,  `publish`, `publish_time`,
+          `audit_time`,  `audit`,  `create_time`,  `modify_time`,`isnew`,`contact_phone`
+    </sql>
+
+    <insert id="insert" parameterType="com.jet.realestate.house.model.House" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long" keyColumn="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+
+        INSERT INTO t_house(`title`, `layout`, `status`, `price`, `area`, `address`, `vendor_id`, `vendee_id`,
+        `note`,`publish`,`isnew`,`publish_time`)
+        VALUES(#{title}, #{layout}, #{status}, #{price},
+        #{area}, #{address}, #{vendorId}, #{vendeeId}, #{note},#{publish}
+        ,#{newHouse},#{publishTime})
+    </insert>
+    <select id="queryAvailableHousesCount" resultType="java.lang.Integer">
+        select
+        count(*)
+        FROM t_house WHERE deleted=0
+        <trim prefix="and" prefixOverrides="and">
+            <if test="!queryParams.includeUnAudit and queryParams.vendorId==null">
+                AND audit=1
+            </if>
+
+            <if test="queryParams.title!=null and queryParams.title!=''">
+                AND title LIKE CONCAT('%',#{queryParams.title},'%')
+            </if>
+            <if test="queryParams.vendorId!=null">AND vendor_id=#{queryParams.vendorId}</if>
+            <if test="queryParams.vendeeId!=null">AND vendee_id=#{queryParams.vendeeId}</if>
+            <if test="queryParams.audit!=null">AND audit=#{queryParams.audit}</if>
+            <if test="queryParams.layout!=null">AND layout=#{queryParams.layout}</if>
+            <if test="queryParams.newHouse!=null">AND isnew=#{queryParams.newHouse}</if>
+            <if test="queryParams.priceMin!=null and queryParams.priceMax!=null">AND price BETWEEN
+                #{queryParams.priceMin} AND #{queryParams.priceMax}
+            </if>
+            <if test="queryParams.areaMin!=null and queryParams.areaMax!=null">AND price BETWEEN
+                #{queryParams.areaMin} AND #{queryParams.areaMax}
+            </if>
+            <if test="queryParams.ids!=null and queryParams.ids.size>0">
+                id IN
+                <foreach collection="queryParams.ids" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </trim>
+        ORDER BY create_time DESC
+
+    </select>
+
+    <select id="queryAvailableHouses" resultMap="resultMap">
+        select
+        <include refid="BASE_COLS"></include>
+        FROM t_house WHERE  deleted=0
+        <trim prefix="and" prefixOverrides="and">
+            <if test="!queryParams.includeUnAudit and queryParams.vendorId==null">
+                AND audit=1
+            </if>
+
+            <if test="queryParams.title!=null and queryParams.title!=''">
+                AND title LIKE CONCAT('%',#{queryParams.title},'%')
+            </if>
+            <if test="queryParams.vendorId!=null">AND vendor_id=#{queryParams.vendorId}</if>
+            <if test="queryParams.vendeeId!=null">AND vendee_id=#{queryParams.vendeeId}</if>
+            <if test="queryParams.audit!=null">AND audit=#{queryParams.audit}</if>
+            <if test="queryParams.layout!=null">AND layout=#{queryParams.layout}</if>
+            <if test="queryParams.newHouse!=null">AND isnew=#{queryParams.newHouse}</if>
+            <if test="queryParams.priceMin!=null and queryParams.priceMax!=null">AND price BETWEEN
+                #{queryParams.priceMin} AND #{queryParams.priceMax}
+            </if>
+            <if test="queryParams.areaMin!=null and queryParams.areaMax!=null">AND price BETWEEN
+                #{queryParams.areaMin} AND #{queryParams.areaMax}
+            </if>
+        </trim>
+        ORDER BY create_time DESC
+        <if test="queryParams.limit>0">
+            LIMIT #{queryParams.offset},#{queryParams.limit}
+        </if>
+    </select>
+
+
+    <select id="queryHouse" resultMap="resultMap">
+        SELECT <include refid="BASE_COLS"></include> FROM
+        t_house
+        WHERE id=#{houseId} LIMIT 1
+    </select>
+
+    <select id="search">
+        select
+        <include refid="BASE_COLS"></include>
+        FROM t_house WHERE status=0 AND deleted=0
+        <if test="!includeUnAudit">
+            AND audit=1
+        </if>
+        ORDER BY create_time
+    </select>
+
+    <select id="queryHouses" resultMap="resultMap">
+        SELECT <include refid="BASE_COLS"></include>
+        FROM t_house
+        <trim prefix="where">
+        <if test="ids.size()>1">
+            id in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+
+        <if test="ids.size()==1">
+            id=#{ids[0]}
+        </if>
+        </trim>
+    </select>
+    <update id="audit">
+        UPDATE t_house SET audit=1,audit_time=now(),contact_phone=#{phone} WHERE id=#{houseId}
+    </update>
+
+    <update id="publish">
+        UPDATE t_house SET publish=1,publish_time=now() WHERE id=#{houseId} and vendor_id=#{vendorId}
+    </update>
+
+    <update id="rent">
+        UPDATE t_house SET status=1,vendee_id=#{vendeeId} WHERE id=#{houseId}
+    </update>
+    <update id="update" parameterType="com.jet.realestate.house.model.House">
+        UPDATE t_house
+       SET title=#{house.title},`layout`=#{house.layout}, `price`=#{house.price}, `area`=#{house.area}, `address`=#{house.address}
+       WHERE id=#{house.id}
+    </update>
+
+    <delete id="delete">
+        UPDATE t_house SET deleted=1 WHERE id=#{houseId}
+    </delete>
+</mapper>
