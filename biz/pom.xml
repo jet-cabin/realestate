@@ -112,5 +112,11 @@
             <!--<artifactId>morrow-cloud-starter-schedule-elasticjob</artifactId>-->
             <!--<version>3.1.0-SNAPSHOT</version>-->
         <!--</dependency>-->
+
+        <dependency>
+            <groupId>com.jet.estate</groupId>
+            <artifactId>message-starter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

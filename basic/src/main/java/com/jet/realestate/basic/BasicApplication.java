@@ -16,7 +16,9 @@ import org.springframework.context.annotation.Import;
 @RefreshScope
 @Import(WebAutoConfiguration.class)
 public class BasicApplication {
+    static long[] arry=new long[12000000];
     public static void main(String[] args) {
+
         SpringApplication.run(BasicApplication.class, args);
     }
 }

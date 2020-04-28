@@ -53,3 +53,12 @@ mybatis:
 
 server:
   port: 8282
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    tags:
+      application: ${spring.application.name}

@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.jet.messaging.autoconfigure.config.MessageAutoConfiguration
+
+#
+#org.springframework.boot.SpringApplicationRunListener =\
+#  com.jet.estate.message.core.ListenerRegistrar

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.util.UrlPathHelper;
@@ -15,7 +16,7 @@ import java.text.SimpleDateFormat;
 @SuppressWarnings("squid:S1118")
 @Configuration
 @EnableWebMvc
-
+@ComponentScan(basePackages = "com.jet.realestate.house.consumer")
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {

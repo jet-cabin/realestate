@@ -15,9 +15,16 @@ import com.jet.realestate.common.api.CommonResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.rocketmq.client.exception.MQBrokerException;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.client.producer.MQProducer;
+import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,6 +44,9 @@ public class HouseController {
     @Autowired
     private HouseService houseService;
 
+    @Autowired
+    private MQProducer producer;
+
     @ApiOperation("添加房屋信息")
     @PostMapping
     public CommonResult<House> addHouse(@RequestBody House house) {
@@ -52,16 +62,43 @@ public class HouseController {
 //        CommonPage<House> pageInfo = CommonPage.restPage(houses);
 //        pageInfo.setTotal(total);
 //        return CommonResult.success(pageInfo);
+
+
         return houseClient.queryHouses(param);
+    }
+
+    @ApiOperation("message")
+    @PostMapping("/msg")
+    public void sendMsg(@RequestBody String ms){
+        Message msg=new Message();
+
+        try {
+            msg.setBody(("aloha jet "+ms).getBytes("utf-8"));
+            msg.setTopic("tp");
+            msg.setTags("t1");
+            producer.send(msg);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (RemotingException e) {
+            e.printStackTrace();
+        } catch (MQClientException e) {
+            e.printStackTrace();
+        } catch (MQBrokerException e) {
+            e.printStackTrace();
+        }
     }
 
     @ApiOperation("查询房屋详情")
     @GetMapping("/{id}")
     @ResponseBody
     public CommonResult<com.jet.realestate.biz.vo.House> qureyHouse(@PathVariable("id") Long id) {
+
         House house = houseClient.queryHouse(id).getData();
         com.jet.realestate.biz.vo.House result = new com.jet.realestate.biz.vo.House();
         convert(house, result);//data object转换view object
+
         return CommonResult.success(result);
     }
 

@@ -13,6 +13,12 @@ spring:
     sampler:
       probability: 0.2
 
+
+rocketmq:
+  nameServer: "192.168.2.6:9876"
+  producer:
+    groupName: "pg1"
+
 #morrow:
 #  schedule:
 feign:
@@ -34,3 +40,12 @@ ribbon:
   ReadTimout: 60000
   ConnectTimeout: 60000
 #    server-lists: localhost:2181,localhost:2182,localhost:2183
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    tags:
+      application: ${spring.application.name}

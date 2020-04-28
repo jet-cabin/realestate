@@ -52,10 +52,24 @@ mybatis:
   - classpath*:com/**/mapper/*.xml
   typeHandlersPackage: "com.jet.realestate.house.handler"
 
+rocketmq:
+  nameServer: 192.168.2.6:9876
+  consumer:
+    groupName: "cg1"
+
 server:
   port: 8484
 
 logging:
   level:
-    root: debug
+    root: INFO
     com.jet.realestate.house: debug
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    tags:
+      application: ${spring.application.name}
