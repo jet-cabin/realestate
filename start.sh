@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "al"
 
 for d in $(find ./ -type d -name target);do
  #echo $d
